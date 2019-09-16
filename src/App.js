@@ -1,26 +1,59 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Chart from './Chart'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+  const data = [
+    {
+      country: "India",
+      value: 400
+    },
+    {
+      country: "USA",
+      value: 2420
+    },
+    {
+      country: "China",
+      value: 1270
+    },
+    {
+      country: "UK",
+      value: 553
+    },
+    {
+      country: "Germany",
+      value: 731
+    },
+    {
+      country: "Sweden",
+      value: 136
+    },
+    {
+      country: "France",
+      value: 682
+    },
+    {
+      country: "Australia",
+      value: 239
+    },
+    {
+      country: "Canada",
+      value: 367
+    },
+    {
+      country: "Brazil",
+      value: 442
+    }
+  ];
+
+        return (
+            <div>
+              <Chart chartData = {data}/>
+            </div>
+          );
+      
+  }
+
 
 export default App;

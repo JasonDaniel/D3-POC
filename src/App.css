@@ -18,7 +18,13 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
-
+.yAxis{
+  stroke-opacity: 0.25;
+  font-weight: 500;
+}
+.bar { 
+  fill: #55B1F3; 
+}
 .App-link {
   color: #61dafb;
 }
