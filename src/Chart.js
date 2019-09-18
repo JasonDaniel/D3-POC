@@ -10,56 +10,9 @@ import {
 } from "d3";
 import "./App.css";
 
-const Chart = () => {
-  const data = [
-    {
-      dimBranName: "Vogue",
-      value: 400
-    },
-    {
-      dimBranName: "Allure",
-      value: 2420
-    },
-    {
-      dimBranName: "Teen Vogue",
-      value: 1270
-    },
-    {
-      dimBranName: "CN Traveller",
-      value: 553
-    },
-    {
-      dimBranName: "Wired",
-      value: 731
-    },
-    {
-      dimBranName: "Bon Appetite",
-      value: 136
-    },
-    {
-      dimBranName: "Ars tech",
-      value: 682
-    },
-    {
-      dimBranName: "AD",
-      value: 239
-    },
-    {
-      dimBranName: "The New Yorker",
-      value: 367
-    },
-    {
-      dimBranName: "Vanity Fair",
-      value: 442
-    }
-  ];
-
+const Chart = ({data,width,height,margin}) => {
+  
   const barRef = useRef();
-
-  const width = 1000;
-  const height = 800;
-  const margin = 50;
-  const padding = 50;
 
   //Declaring the entrie code in use effect so that it will be triggered while the page is being loaded
   useEffect(() => {
@@ -76,7 +29,7 @@ const Chart = () => {
     //creating xScale
     const xScale = scaleBand()
       .domain(data.map(d => d.dimBranName))
-      .range([0, width - padding])
+      .range([0, width - margin])
       .padding(0.2);
 
     //creating yScale
@@ -87,11 +40,12 @@ const Chart = () => {
     //appending xAxis
     g.append("g")
       .attr("transform", "translate(0," + (height - margin) + ")")
-      .call(axisBottom(xScale))
+      .call(axisBottom(xScale)
+      .tickSize(0))
       .call(g => g.select(".domain").remove())
       .selectAll("text")
-      .attr("transform","rotate(-65)")
-      .attr("dx")
+      .attr("transform","rotate(-60)")
+      .attr("dx","-48px")
      
 
     //appending yAxis
@@ -101,7 +55,7 @@ const Chart = () => {
           .tickFormat(d => {
             return d + "M";
           })
-          .ticks(4)
+          .ticks(6)
           .tickSizeInner(-width)
       )
       .call(g => g.select(".domain").remove())
