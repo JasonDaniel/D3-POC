@@ -9,10 +9,33 @@ import {
   max
 } from "d3";
 import "./App.css";
+import withStyles from "react-jss";
 
-const Chart = ({data,width,height,margin}) => {
-  
+const styles = {
+  yAxis: {
+    strokeOpacity: "0.25",
+    fontWeight: "bold"
+  },
+  bar: {
+    fill: "#55B1F3"
+  },
+};
+const Chart = ({ classes, data, width, height, margin }) => {
+
+//referencing svg to ref variable
   const barRef = useRef();
+
+  //wrap funtion to wrap xAxis label textOverflow
+  var wrap = function() {
+    var self = select(this),
+      textLength = self.node().getComputedTextLength(),
+      text = self.text();
+    while (textLength > (50) && text.length > 0) {
+      text = text.slice(0, -1);
+      self.text(text + '...');
+      textLength = self.node().getComputedTextLength();
+    }
+  };
 
   //Declaring the entrie code in use effect so that it will be triggered while the page is being loaded
   useEffect(() => {
@@ -24,7 +47,7 @@ const Chart = ({data,width,height,margin}) => {
     //creacting a group variable
     var g = svg
       .append("g")
-      .attr("transform", "translate("+50 + "," + 0 + ")");
+      .attr("transform", "translate(" + 50 + "," + 0 + ")");
 
     //creating xScale
     const xScale = scaleBand()
@@ -40,13 +63,14 @@ const Chart = ({data,width,height,margin}) => {
     //appending xAxis
     g.append("g")
       .attr("transform", "translate(0," + (height - margin) + ")")
-      .call(axisBottom(xScale)
-      .tickSize(0))
+      .call(axisBottom(xScale).tickSize(0))
+      .attr("class", "")
       .call(g => g.select(".domain").remove())
       .selectAll("text")
-      .attr("transform","rotate(-60)")
-      .attr("dx","-48px")
-     
+      .attr("transform", "rotate(-60)")
+      .attr("dx", "-30px")
+      .attr("class", classes.xAxis)
+      .each(wrap);
 
     //appending yAxis
     g.append("g")
@@ -59,20 +83,21 @@ const Chart = ({data,width,height,margin}) => {
           .tickSizeInner(-width)
       )
       .call(g => g.select(".domain").remove())
-      .attr("class", "yAxis");
+      .attr("class", classes.yAxis);
 
     //Adding the rectangle for bar graphs
     g.selectAll(".bar")
       .data(data)
       .enter()
       .append("rect")
-      .attr("class", "bar")
+      .attr("class", classes.bar)
       .attr("x", d => xScale(d.dimBranName))
       .attr("y", d => yScale(d.value))
       .attr("width", xScale.bandwidth())
       .attr("height", d => yScale(0) - yScale(d.value));
   }, [data]);
 
+  //returning svg component
   return (
     <svg width="100%" height="100%" ref={barRef}>
       {" "}
@@ -80,4 +105,4 @@ const Chart = ({data,width,height,margin}) => {
   );
 };
 
-export default Chart;
+export default withStyles(styles)(Chart);
