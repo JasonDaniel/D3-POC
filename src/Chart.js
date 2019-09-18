@@ -1,25 +1,33 @@
 import React, { useEffect, useRef } from "react";
 import {
   select,
-  extent,
   scaleLinear,
   scaleBand,
   axisBottom,
   axisLeft,
   max
 } from "d3";
-import "./App.css";
 import withStyles from "react-jss";
 
 const styles = {
   yAxis: {
     strokeOpacity: "0.25",
-    fontWeight: "bold"
+    fontWeight: "bold",
+    fontSize: "14px",
   },
   bar: {
     fill: "#55B1F3"
   },
+  xAxis:{
+    color:"#979797",
+    fontSize:"12px"
+  },
+  svg:{
+    margin: "20px"
+  }
 };
+
+
 const Chart = ({ classes, data, width, height, margin }) => {
 
 //referencing svg to ref variable
@@ -42,7 +50,8 @@ const Chart = ({ classes, data, width, height, margin }) => {
     //referencing the svg where the chart is to be displayed
     const svg = select(barRef.current)
       .attr("width", width)
-      .attr("height", height);
+      .attr("height", height)
+      .attr("class",classes.svg);
 
     //creacting a group variable
     var g = svg
@@ -67,7 +76,7 @@ const Chart = ({ classes, data, width, height, margin }) => {
       .attr("class", "")
       .call(g => g.select(".domain").remove())
       .selectAll("text")
-      .attr("transform", "rotate(-60)")
+      .attr("transform", "rotate(-45)")
       .attr("dx", "-30px")
       .attr("class", classes.xAxis)
       .each(wrap);
