@@ -1,13 +1,12 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Chart from './Chart'
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import Chart from "./Chart";
 
 const App = () => {
-
-  const width = 1000;
+  const width = 1800;
   const height = 800;
-  const margin = 80;
+  const margin = { top: 60, right: 40, bottom: 88, left: 105 };
   const data = [
     {
       dimBranName: "Vogue",
@@ -51,13 +50,11 @@ const App = () => {
     }
   ];
 
-        return (
-            <div>
-              <Chart data = {data} width={width} height={height} margin={margin}/>
-            </div>
-          );
-      
-  }
-
+  return (
+    <div>
+      <Chart data={data} width={width} height={height} margin={margin} />
+    </div>
+  );
+};
 
 export default App;
