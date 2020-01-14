@@ -6,7 +6,14 @@ import Chart from "./Chart";
 const App = () => {
   const width = 1800;
   const height = 800;
-  const margin = { top: 60, right: 40, bottom: 88, left: 105 };
+  const margin = {
+    top: 60,
+    right: 40,
+    bottom: 88,
+    left: 105,
+    topNav: 10,
+    bottomNav: 20
+  };
   const data = [
     {
       dimBranName: "Vogue",

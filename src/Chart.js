@@ -3,22 +3,27 @@ import {
   select,
   scaleLinear,
   scaleBand,
+  scaleOrdinal,
   scaleTime,
   axisBottom,
   axisLeft,
-  max,
   area,
   csv,
   timeParse,
+  time,
   extent,
   line,
   curveBasis,
-  timeFormat
+  timeFormat,
+  rangeRoundPoints,
+  min,
+  max
 } from "d3";
 import csvData from "./mock_data.csv";
 import withStyles from "react-jss";
 import { version } from "punycode";
-
+import { tsExternalModuleReference } from "@babel/types";
+import { getTimelineData } from "./utils/dummyData";
 const styles = {
   yAxis: {
     color: "#979797",
@@ -37,27 +42,42 @@ const styles = {
   linepath1: {
     fill: "maroon",
     strokeLinejoin: "round",
-    opacity: ".3"
+    opacity: ".05",
+    "&:hover": {
+      opacity: "1"
+    }
   },
   linepath2: {
     fill: "green",
     strokeLinejoin: "round",
-    opacity: ".3"
+    opacity: ".05",
+    "&:hover": {
+      opacity: "1"
+    }
   },
   linepath3: {
     fill: "blue",
     strokeLinejoin: "round",
-    opacity: ".3"
+    opacity: ".05",
+    "&:hover": {
+      opacity: "1"
+    }
   },
   linepath4: {
     fill: "yellow",
     strokeLinejoin: "round",
-    opacity: ".3"
+    opacity: ".05",
+    "&:hover": {
+      opacity: "1"
+    }
   },
   linepath5: {
-    fill: "pink",
+    fill: "black",
     strokeLinejoin: "round",
-    opacity: ".3"
+    opacity: ".05",
+    "&:hover": {
+      opacity: "1"
+    }
   },
   title: {
     fontSize: "3.7em",
@@ -66,6 +86,26 @@ const styles = {
 };
 
 const Chart = ({ classes, data, width, height, margin }) => {
+  const svgWidth = 1700,
+    svgHeight = 1300,
+    dimension = {
+      chartTitle: 20,
+      xAxis: 20,
+      yAxis: 20,
+      xTitle: 20,
+      yTitle: 20,
+      navChart: 70
+    },
+    navChartDim = dimension.navChart;
+  //
+  var heightNav = navChartDim - margin.topNav - margin.bottomNav;
+  var marginTopNav = svgHeight - margin.bottom - heightNav - margin.topNav;
+  var width = svgWidth - margin.left - margin.right;
+  var widthNav = width;
+  var yDomain = [],
+    xNav,
+    yNav;
+
   //referencing svg to ref variable
   const barRef = useRef();
 
@@ -123,7 +163,11 @@ const Chart = ({ classes, data, width, height, margin }) => {
 
       // //creating xScale
       const xScale = scaleTime()
-        .domain(extent(data, xValue))
+        .domain([
+          min(data, d => d.Date).setDate(min(data, d => d.Date).getDate() + 10),
+          max(data, d => d.Date)
+        ])
+        //  .domain(extent(data, xValue))
         .range([0, innerWidth]);
       //creating yScale
       const yScale = scaleLinear()
@@ -135,7 +179,7 @@ const Chart = ({ classes, data, width, height, margin }) => {
         .attr("transform", "translate(0," + innerHeight + ")")
         .call(
           axisBottom(xScale)
-            .ticks(30)
+            .ticks(20)
             .tickFormat(timeFormat("%d/%m"))
         )
         .attr("class", "")
@@ -149,7 +193,7 @@ const Chart = ({ classes, data, width, height, margin }) => {
       g.append("g")
         .call(
           axisLeft(yScale)
-            .ticks(6)
+            .ticks(10)
             .tickSizeInner(-innerWidth)
         )
         .call(g => g.select(".domain").remove())
@@ -209,6 +253,37 @@ const Chart = ({ classes, data, width, height, margin }) => {
         .attr("class", classes.title)
         .attr("y", -10)
         .text(title);
+
+      // add nav chart
+      var nav = svg
+        .append("g")
+        .attr("transform", "translate (" + 20 + "," + 750 + ")");
+
+      // add nav background
+      nav
+        .append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", width)
+        .attr("height", svgHeight / 3)
+        .style("fill", "#F5F5F1")
+        .style("shape-rendering", "crispEdges")
+        .attr("transform", "translate(0, 0)");
+
+      // add group to data items
+      // //creating xScale
+      const navXScale = scaleTime()
+        .domain(extent(data, xValue))
+        .range([0, innerWidth]);
+      //creating yScale
+      const navYScale = scaleLinear()
+        .domain([0, max(data.map(d => d.Allure))])
+        .range([75, 0]);
+
+      // first, the full time domain
+      // var endTime = xNavDate.getDate();
+      // var startTime = new Date(endTime.getTime() - maxSeconds * 1000);
+      // var interval = endTime.getTime() - startTime.getTime();
 
       // //defining area
       // const areaGenerator = area()
