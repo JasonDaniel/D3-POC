@@ -106,8 +106,11 @@ class Chart1 extends React.Component {
   //   const barRef = useRef();
 
   brushed = (xScale, xScale2, brush, g, areaGenerator1, xAxis) => {
-    console.log(brush);
+    console.log(brush.extent([10, 50]));
     //if (brush) xScale.domain(brush.empty() ? xScale2.domain() : brush.extent());
+    //xScale.domain(brush.extent());
+    console.log(xScale(5));
+    xScale.domain(50, 200);
     g.select(".area").attr("d", areaGenerator1);
     g.select(".x.axis").call(xAxis);
   };
@@ -131,6 +134,7 @@ class Chart1 extends React.Component {
     //creacting a group variable
     var g = svg
       .append("g")
+      .attr("class", "focus")
       .attr("transform", "translate(" + 50 + "," + 10 + ")");
 
     //formating csv data
@@ -159,7 +163,9 @@ class Chart1 extends React.Component {
 
     //x axis for brush
     const xAxis2 = axisBottom(xScale2);
-    const xAxis = axisBottom(xScale);
+    const xAxis = axisBottom(xScale)
+      .ticks(30)
+      .tickFormat(timeFormat("%d/%m"));
 
     //defining Area generator for main chart
     const areaGenerator1 = area()
@@ -197,20 +203,28 @@ class Chart1 extends React.Component {
     //   .y0(180)
     //   .y1(d => yScale2(yValue4(d)));
 
-    //appending xAxis
     g.append("g")
+      .attr("class", "axis axis--x")
       .attr("transform", "translate(0," + innerHeight + ")")
-      .call(
-        axisBottom(xScale)
-          .ticks(30)
-          .tickFormat(timeFormat("%d/%m"))
-      )
-      .attr("class", "")
-      .call(g => g.select(".domain").remove())
+      .call(xAxis)
       .selectAll("text")
       .attr("transform", "rotate(-45)")
       .attr("dx", "-30px")
       .attr("class", classes.xAxis);
+    //appending xAxis
+    // g.append("g")
+    //   .attr("transform", "translate(0," + innerHeight + ")")
+    //   .call(
+    //     axisBottom(xScale)
+    //       .ticks(30)
+    //       .tickFormat(timeFormat("%d/%m"))
+    //   )
+    //   .attr("class", "")
+    //   .call(g => g.select(".domain").remove())
+    //   .selectAll("text")
+    //   .attr("transform", "rotate(-45)")
+    //   .attr("dx", "-30px")
+    //   .attr("class", classes.xAxis);
 
     // //appending yAxis
     g.append("g")
@@ -239,6 +253,13 @@ class Chart1 extends React.Component {
     //   .attr("class", classes.linepath4)
     //   .attr("d", areaGenerator4(data));
 
+    //appending axis for brush
+    context
+      .append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0,180)")
+      .call(xAxis2);
+
     //appending area for brush
     context
       .append("path")
@@ -256,20 +277,15 @@ class Chart1 extends React.Component {
     //   .append("path")
     //   .attr("class", classes.linepath4)
     //   .attr("d", areaGeneratorBrush4(data));
-    // context
-    //   .append("g")
-    //   .attr("class", "axis axis--x")
-    //   .attr("transform", "translate(0,180)")
-    //   .call(xAxis2);
 
     var brush = brushX().extent([
       [0, 0],
-      [width, height2]
+      [width, 300]
     ]);
     brush.on("brush", () => {
       this.brushed(xScale, xScale2, brush, g, areaGenerator1, xAxis);
       console.log("executes");
-      this.setState({ test: "true" });
+      //   this.setState({ test: "true" });
     });
 
     context
@@ -277,8 +293,9 @@ class Chart1 extends React.Component {
       .attr("class", "x brush")
       .call(brush)
       .selectAll("rect")
-      .attr("y", -6)
-      .attr("height", height2 + 7);
+      .attr("y", 5)
+      .attr("height", height2 + 10);
+
     // context
     //   .append("g")
     //   .attr("class", "brush")
