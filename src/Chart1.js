@@ -235,7 +235,6 @@ class Chart1 extends React.Component {
     const brushed = () => {
       var s = d3.event.selection || xScale2.range();
       xScale.domain(s.map(xScale2.invert, xScale2))
-      console.log('area', areaGenerator1(data))
       g.select(".areachart").attr("d", areaGenerator1(data));
       g.select(".x.axis").call(xAxis);
     };

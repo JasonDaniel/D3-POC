@@ -3,7 +3,8 @@
 }
 
 .areachart{
-  fill: red;
+  fill:maroon;
+  opacity: .2;
   clip-path: url(#clip);
 }
 
