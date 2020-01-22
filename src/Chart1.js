@@ -86,9 +86,9 @@ const styles = {
     }
   },
   circle: {
-    fill: "black",
+    fill: "maroon",
     strokeLinejoin: "round",
-    opacity: "1",
+    opacity: ".5",
     "&:hover": {
       opacity: "1"
     }
@@ -117,7 +117,7 @@ class Chart1 extends React.Component {
       .attr("width", width + margin1.left + margin1.right)
       .attr("height", height)
       .attr("class", classes.svg)
-      .attr("transform", "translate(50,10)");
+      .attr("transform", "translate(70,10)");
 
     svg
       .append("defs")
@@ -131,13 +131,13 @@ class Chart1 extends React.Component {
     var context = svg
       .append("g")
       .attr("class", "context")
-      .attr("transform", "translate(50," + 600 + ")");
+      .attr("transform", "translate(70," + 600 + ")");
 
     //creacting a group variable
     var g = svg
       .append("g")
       .attr("class", "focus")
-      .attr("transform", "translate(50,10)");
+      .attr("transform", "translate(70,10)");
 
     //formating csv data
     const xValue = d => d.Date;
@@ -235,35 +235,11 @@ class Chart1 extends React.Component {
       .attr("class", "x axis")
       .attr("transform", "translate(0," + innerHeight + ")")
       .call(xAxis)
-      .selectAll("text")
-      .attr("transform", "rotate(-45)")
-      .attr("dx", "-30px");
+      .selectAll("text");
+    //.attr("transform", "rotate(-45)")
+    //.attr("dx", "-30px");
 
     //appending dots with tooltip
-    // Add the scatterplot
-    g.selectAll("dot")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("r", 5)
-      .attr("cx", xValue)
-      .attr("cy", yValue)
-      .on("mouseover", function(d) {
-        svg
-          .transition()
-          .duration(200)
-          .style("opacity", 0.9);
-        svg
-          .html(d.Date + "<br/>" + d.page_views)
-          .style("left", event.pageX + "px")
-          .style("top", event.pageY - 28 + "px");
-      })
-      .on("mouseout", function(d) {
-        svg
-          .transition()
-          .duration(500)
-          .style("opacity", 0);
-      });
 
     //.attr("class", classes.xAxis);
     //appending xAxis
@@ -309,6 +285,16 @@ class Chart1 extends React.Component {
     // g.append("path")
     //   .attr("class", classes.linepath5)
     //   .attr("d", areaGenerator5(data));
+
+    //appending tool tip info
+    g.selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("class", classes.circle)
+      .attr("cx", d => xScale(xValue(d)))
+      .attr("cy", d => yScale(yValue(d)))
+      .attr("r", 2);
 
     //appending axis for brush
     context
@@ -366,6 +352,67 @@ class Chart1 extends React.Component {
       .selectAll("rect")
       .attr("y", 5)
       .attr("height", height2 + 10);
+
+    //appending tooltip info
+    // g.append("rect")
+    //   .attr("class", "overlay")
+    //   .attr("width", width)
+    //   .attr("height", height)
+    //   .on("mouseover", function() {
+    //     focus.style("display", null);
+    //   })
+    //   .on("mouseout", function() {
+    //     focus.style("display", "none");
+    //   })
+    //   .on("mousemove", mousemove);
+
+    // function mousemove() {
+    //   var x0 = main_x.invert(d3.mouse(this)[0]),
+    //     i = bisectDate(data, x0, 1),
+    //     d0 = data[i - 1],
+    //     d1 = data[i],
+    //     d = x0 - d0.Uhrzeit > d1.Uhrzeit - x0 ? d1 : d0;
+    //   focus
+    //     .select("circle.y0")
+    //     .attr(
+    //       "transform",
+    //       "translate(" + main_x(d.Uhrzeit) + "," + main_y0(d.Durchschn) + ")"
+    //     );
+    //   focus
+    //     .select("text.y0")
+    //     .attr(
+    //       "transform",
+    //       "translate(" + main_x(d.Uhrzeit) + "," + main_y0(d.Durchschn) + ")"
+    //     )
+    //     .text(formatOutput0(d));
+    //   focus
+    //     .select("circle.y1")
+    //     .attr(
+    //       "transform",
+    //       "translate(" + main_x(d.Uhrzeit) + "," + main_y1(d.Anz) + ")"
+    //     );
+    //   focus
+    //     .select("text.y1")
+    //     .attr(
+    //       "transform",
+    //       "translate(" + main_x(d.Uhrzeit) + "," + main_y1(d.Anz) + ")"
+    //     )
+    //     .text(formatOutput1(d));
+    //   focus
+    //     .select(".x")
+    //     .attr("transform", "translate(" + main_x(d.Uhrzeit) + ",0)");
+    //   focus
+    //     .select(".y0")
+    //     .attr(
+    //       "transform",
+    //       "translate(" + main_width * -1 + ", " + main_y0(d.Durchschn) + ")"
+    //     )
+    //     .attr("x2", main_width + main_x(d.Uhrzeit));
+    //   focus
+    //     .select(".y1")
+    //     .attr("transform", "translate(0, " + main_y1(d.Anz) + ")")
+    //     .attr("x1", main_x(d.Uhrzeit));
+    // }
   };
 
   componentWillReceiveProps() {
