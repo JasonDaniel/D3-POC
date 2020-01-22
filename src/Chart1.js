@@ -46,7 +46,9 @@ const styles = {
     opacity: ".3"
   },
   linepath1: {
-    fill: "maroon",
+    stroke: "maroon",
+    strokeWidth: 5,
+    fill: "none",
     strokeLinejoin: "round",
     opacity: ".2",
     "&:hover": {
@@ -54,7 +56,9 @@ const styles = {
     }
   },
   linepath2: {
-    fill: "green",
+    stroke: "green",
+    strokeWidth: 5,
+    fill: "none",
     strokeLinejoin: "round",
     opacity: ".2",
     "&:hover": {
@@ -62,7 +66,9 @@ const styles = {
     }
   },
   linepath3: {
-    fill: "blue",
+    stroke: "blue",
+    strokeWidth: 5,
+    fill: "none",
     strokeLinejoin: "round",
     opacity: ".2",
     "&:hover": {
@@ -70,7 +76,9 @@ const styles = {
     }
   },
   linepath4: {
-    fill: "yellow",
+    stroke: "yellow",
+    strokeWidth: 5,
+    fill: "none",
     strokeLinejoin: "round",
     opacity: ".2",
     "&:hover": {
@@ -78,7 +86,9 @@ const styles = {
     }
   },
   linepath5: {
-    fill: "pink",
+    stroke: "pink",
+    strokeWidth: 5,
+    fill: "none",
     strokeLinejoin: "round",
     opacity: ".2",
     "&:hover": {
@@ -167,64 +177,64 @@ class Chart1 extends React.Component {
     const xAxis = axisBottom(xScale);
 
     //defining Area generator for main chart
-    const areaGenerator1 = area()
+    const areaGenerator1 = line()
       .x(d => xScale(d.Date))
-      .y0(innerHeight)
-      .y1(d => yScale(d.Allure));
+      //.y0(innerHeight)
+      .y(d => yScale(d.Allure));
 
     //defining Area generator for main chart
-    const areaGenerator2 = area()
+    const areaGenerator2 = line()
       .x(d => xScale(d.Date))
-      .y0(innerHeight)
-      .y1(d => yScale(d.AD));
+      //.y0(innerHeight)
+      .y(d => yScale(d.AD));
 
     //defining Area generator for main chart
-    const areaGenerator3 = area()
+    const areaGenerator3 = line()
       .x(d => xScale(d.Date))
-      .y0(innerHeight)
-      .y1(d => yScale(d.CNTraveller));
+      // .y0(innerHeight)
+      .y(d => yScale(d.CNTraveller));
 
     //defining Area generator for main chart
-    const areaGenerator4 = area()
+    const areaGenerator4 = line()
       .x(d => xScale(d.Date))
-      .y0(innerHeight)
-      .y1(d => yScale(d.Vogue));
+      // .y0(innerHeight)
+      .y(d => yScale(d.Vogue));
 
     //defining Area generator for main chart
-    const areaGenerator5 = area()
+    const areaGenerator5 = line()
       .x(d => xScale(d.Date))
-      .y0(innerHeight)
-      .y1(d => yScale(d.TeenVogue));
+      // .y0(innerHeight)
+      .y(d => yScale(d.TeenVogue));
 
     //defining area chart for brush
-    const areaGeneratorBrush1 = area()
+    const areaGeneratorBrush1 = line()
       .x(d => xScale2(xValue(d)))
-      .y0(180)
-      .y1(d => yScale2(yValue1(d)));
+      // .y0(180)
+      .y(d => yScale2(yValue1(d)));
 
     //defining area chart for brush
-    const areaGeneratorBrush2 = area()
+    const areaGeneratorBrush2 = line()
       .x(d => xScale2(xValue(d)))
-      .y0(180)
-      .y1(d => yScale2(yValue2(d)));
+      //.y0(180)
+      .y(d => yScale2(yValue2(d)));
 
     //defining area chart for brush
-    const areaGeneratorBrush3 = area()
+    const areaGeneratorBrush3 = line()
       .x(d => xScale2(xValue(d)))
-      .y0(180)
-      .y1(d => yScale2(yValue3(d)));
+      // .y0(180)
+      .y(d => yScale2(yValue3(d)));
 
     //defining area chart for brush
-    const areaGeneratorBrush4 = area()
+    const areaGeneratorBrush4 = line()
       .x(d => xScale2(xValue(d)))
-      .y0(180)
-      .y1(d => yScale2(yValue4(d)));
+      // .y0(180)
+      .y(d => yScale2(yValue4(d)));
 
     //defining area chart for brush
-    const areaGeneratorBrush5 = area()
+    const areaGeneratorBrush5 = line()
       .x(d => xScale2(xValue(d)))
-      .y0(180)
-      .y1(d => yScale2(yValue5(d)));
+      // .y0(180)
+      .y(d => yScale2(yValue5(d)));
 
     g.append("g")
       .attr("class", "x axis")
