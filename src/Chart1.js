@@ -286,15 +286,32 @@ class Chart1 extends React.Component {
     //   .attr("class", classes.linepath5)
     //   .attr("d", areaGenerator5(data));
 
-    //appending tool tip info
-    g.selectAll("circle")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("class", classes.circle)
-      .attr("cx", d => xScale(xValue(d)))
-      .attr("cy", d => yScale(yValue(d)))
-      .attr("r", 2);
+    // //appending tool tip info
+    // g.selectAll("circle")
+    //   .data(data)
+    //   .enter()
+    //   .append("circle")
+    //   .attr("class", classes.circle)
+    //   .attr("cx", d => xScale(xValue(d)))
+    //   .attr("cy", d => yScale(yValue(d)))
+    //   .attr("r", 2);
+
+    // const mouseMove = e => {
+
+    //   console.log(xTooltip);
+    // };
+
+    // svg.on("mousemove", e => mouseMove(e));
+    var bisectDate = d3.bisector(d => d.Date).left;
+
+    svg.on("mousemove", function() {
+      var xTooltipPos = d3.mouse(this)[0];
+      var xTooltipPoint = xScale.invert(xTooltipPos);
+      var i = bisectDate(data, xTooltipPoint, 1);
+      console.log(data[i]);
+
+      // log the mouse x,y position
+    });
 
     //appending axis for brush
     context
@@ -333,6 +350,7 @@ class Chart1 extends React.Component {
       var s = d3.event.selection || xScale2.range();
       xScale.domain(s.map(xScale2.invert, xScale2));
       g.select(`.${classes.linepath1}`).attr("d", areaGenerator1(data));
+      g.select(`.${classes.circle}`).attr("d", areaGenerator1(data));
       //   g.select(`.${classes.linepath2}`).attr("d", areaGenerator2(data));
       //   g.select(`.${classes.linepath3}`).attr("d", areaGenerator3(data));
       //   g.select(`.${classes.linepath4}`).attr("d", areaGenerator4(data));
