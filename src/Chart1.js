@@ -164,21 +164,67 @@ class Chart1 extends React.Component {
 
     //x axis for brush
     const xAxis2 = axisBottom(xScale2);
-    const xAxis = axisBottom(xScale)
-      .ticks(30)
-      .tickFormat(timeFormat("%d/%m"));
+    const xAxis = axisBottom(xScale);
 
     //defining Area generator for main chart
     const areaGenerator1 = area()
-      .x(d=> xScale(d.Date))
+      .x(d => xScale(d.Date))
       .y0(innerHeight)
       .y1(d => yScale(d.Allure));
+
+    //defining Area generator for main chart
+    const areaGenerator2 = area()
+      .x(d => xScale(d.Date))
+      .y0(innerHeight)
+      .y1(d => yScale(d.AD));
+
+    //defining Area generator for main chart
+    const areaGenerator3 = area()
+      .x(d => xScale(d.Date))
+      .y0(innerHeight)
+      .y1(d => yScale(d.CNTraveller));
+
+    //defining Area generator for main chart
+    const areaGenerator4 = area()
+      .x(d => xScale(d.Date))
+      .y0(innerHeight)
+      .y1(d => yScale(d.Vogue));
+
+    //defining Area generator for main chart
+    const areaGenerator5 = area()
+      .x(d => xScale(d.Date))
+      .y0(innerHeight)
+      .y1(d => yScale(d.TeenVogue));
 
     //defining area chart for brush
     const areaGeneratorBrush1 = area()
       .x(d => xScale2(xValue(d)))
       .y0(180)
       .y1(d => yScale2(yValue1(d)));
+
+    //defining area chart for brush
+    const areaGeneratorBrush2 = area()
+      .x(d => xScale2(xValue(d)))
+      .y0(180)
+      .y1(d => yScale2(yValue2(d)));
+
+    //defining area chart for brush
+    const areaGeneratorBrush3 = area()
+      .x(d => xScale2(xValue(d)))
+      .y0(180)
+      .y1(d => yScale2(yValue3(d)));
+
+    //defining area chart for brush
+    const areaGeneratorBrush4 = area()
+      .x(d => xScale2(xValue(d)))
+      .y0(180)
+      .y1(d => yScale2(yValue4(d)));
+
+    //defining area chart for brush
+    const areaGeneratorBrush5 = area()
+      .x(d => xScale2(xValue(d)))
+      .y0(180)
+      .y1(d => yScale2(yValue5(d)));
 
     g.append("g")
       .attr("class", "x axis")
@@ -216,8 +262,24 @@ class Chart1 extends React.Component {
 
     //appending area for main chart
     g.append("path")
-      .attr("class", "areachart")
+      .attr("class", classes.linepath1)
       .attr("d", areaGenerator1(data));
+
+    g.append("path")
+      .attr("class", classes.linepath2)
+      .attr("d", areaGenerator2(data));
+
+    g.append("path")
+      .attr("class", classes.linepath3)
+      .attr("d", areaGenerator3(data));
+
+    g.append("path")
+      .attr("class", classes.linepath4)
+      .attr("d", areaGenerator4(data));
+
+    g.append("path")
+      .attr("class", classes.linepath5)
+      .attr("d", areaGenerator5(data));
 
     //appending axis for brush
     context
@@ -232,10 +294,37 @@ class Chart1 extends React.Component {
       .attr("class", classes.linepath1)
       .attr("d", areaGeneratorBrush1(data));
 
+    context
+      .append("path")
+      .attr("class", classes.linepath2)
+      .attr("d", areaGeneratorBrush2(data));
+
+    context
+      .append("path")
+      .attr("class", classes.linepath3)
+      .attr("d", areaGeneratorBrush3(data));
+
+    context
+      .append("path")
+      .attr("class", classes.linepath4)
+      .attr("d", areaGeneratorBrush4(data));
+
+    context
+      .append("path")
+      .attr("class", classes.linepath5)
+      .attr("d", areaGeneratorBrush5(data));
+
     const brushed = () => {
       var s = d3.event.selection || xScale2.range();
-      xScale.domain(s.map(xScale2.invert, xScale2))
-      g.select(".areachart").attr("d", areaGenerator1(data));
+      xScale.domain(s.map(xScale2.invert, xScale2));
+      g.select(`.${classes.linepath1}`).attr("d", areaGenerator1(data));
+      g.select(`.${classes.linepath2}`).attr("d", areaGenerator2(data));
+      g.select(`.${classes.linepath3}`).attr("d", areaGenerator3(data));
+      g.select(`.${classes.linepath4}`).attr("d", areaGenerator4(data));
+      g.select(`.${classes.linepath5}`).attr("d", areaGenerator5(data));
+
+      //g.select(".areachart").attr("d", areaGenerator2(data));
+      //   g.select(".areachart").attr("d", areaGenerator2(data));
       g.select(".x.axis").call(xAxis);
     };
 
