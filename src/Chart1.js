@@ -87,6 +87,10 @@ const styles = {
       opacity: "1"
     }
   },
+  tooltip: {
+    stroke: "black",
+    fill: "#1d858f"
+  },
   circle: {
     fill: "maroon",
     strokeLinejoin: "round",
@@ -303,14 +307,40 @@ class Chart1 extends React.Component {
     //   console.log(xTooltip);
     // };
 
-    // svg.on("mousemove", e => mouseMove(e));
-    var bisectDate = d3.bisector(d => d.Date).left;
+    //creating tool tip circle and text
+    g.append("circle")
+      .attr("class", classes.tooltip)
+      .attr("r", 4);
 
+    g.append("text")
+      .attr("class", classes.tooltip)
+      .attr("dy", "-1em");
+    //getting tooltip position
+
+    var bisectDate = d3.bisector(d => d.Date).left;
+    var formatOutput = function(d) {
+      return d.Date + " - " + d.page_views + "views";
+    };
     g.on("mousemove", function() {
       var xTooltipPos = d3.mouse(this)[0];
       var xTooltipPoint = xScale.invert(xTooltipPos);
       var i = bisectDate(data, xTooltipPoint, 1);
+      var d0 = data[i - 1];
+      var d1 = data[i];
       console.log(data[i]);
+      var d = xTooltipPoint - d0.Date > d1.Date - xTooltipPoint ? d1 : d0;
+      g.select("circle")
+        .attr("data", data)
+        .attr(
+          "transform",
+          "translate(" + xScale(d.Date) + "," + yScale(d.page_views) + ")"
+        );
+      g.select("text")
+        .attr(
+          "transform",
+          "translate(" + xScale(d.Date) + "," + yScale(d.page_views) + ")"
+        )
+        .text(formatOutput(d));
 
       // log the mouse x,y position
     });
