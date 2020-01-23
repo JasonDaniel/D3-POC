@@ -46,9 +46,11 @@ const styles = {
     opacity: ".3"
   },
   linepath1: {
-    fill: "maroon",
+    fill: "#23dced",
+    stroke: "black",
+    strokeWidth: "2",
     strokeLinejoin: "round",
-    opacity: ".2",
+    opacity: ".7",
     "&:hover": {
       opacity: "1"
     }
@@ -304,7 +306,7 @@ class Chart1 extends React.Component {
     // svg.on("mousemove", e => mouseMove(e));
     var bisectDate = d3.bisector(d => d.Date).left;
 
-    svg.on("mousemove", function() {
+    g.on("mousemove", function() {
       var xTooltipPos = d3.mouse(this)[0];
       var xTooltipPoint = xScale.invert(xTooltipPos);
       var i = bisectDate(data, xTooltipPoint, 1);
@@ -356,8 +358,6 @@ class Chart1 extends React.Component {
       //   g.select(`.${classes.linepath4}`).attr("d", areaGenerator4(data));
       //   g.select(`.${classes.linepath5}`).attr("d", areaGenerator5(data));
 
-      //g.select(".areachart").attr("d", areaGenerator2(data));
-      //   g.select(".areachart").attr("d", areaGenerator2(data));
       g.select(".x.axis").call(xAxis);
     };
 
