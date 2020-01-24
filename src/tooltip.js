@@ -3,6 +3,11 @@ import withStyles from "react-jss";
 import dateFormat from "dateformat";
 
 const style = {
+  title: {
+    position: "absolute",
+    top: "20px",
+    left: "200px"
+  },
   showTooltip: {
     position: "absolute",
     top: "20px",
@@ -19,22 +24,31 @@ const style = {
     display: "none"
   }
 };
-function Tooltip({ data, classes, tooltipDisplay }) {
+function Tooltip({ data, classes, tooltipDisplay, title }) {
   var date = dateFormat(data.Date, "mmm d,yyyy");
-  console.log(tooltipDisplay);
-  if (date) {
-    return (
+  return (
+    <div>
+      <h1 className={classes.title}>{title}</h1>
       <div
         className={
           tooltipDisplay === "true" ? classes.showTooltip : classes.hideTooltip
         }
       >
-        <div>Date:{date}</div>
-        <div>Page views on this day: {data.page_views}</div>
-        <div>Most contributed article: {data.hits_page_pagetitle}</div>
+        <div>
+          <b>Date:</b>
+          {date}
+        </div>
+        <div>
+          <b>Page views on this day: </b>
+          {data.page_views}
+        </div>
+        <div>
+          <b>Most contributed article: </b>
+          {data.hits_page_pagetitle}
+        </div>
       </div>
-    );
-  } else return null;
+    </div>
+  );
 }
 
 export default withStyles(style)(Tooltip);

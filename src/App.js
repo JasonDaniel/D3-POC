@@ -8,7 +8,7 @@ const App = () => {
   const height2 = 800;
   const margin1 = { top: 220, right: 20, bottom: 110, left: 40 };
   const margin2 = { top: 450, right: 20, bottom: 170, left: 40 };
-
+  const brand = "The New Yorker";
   return (
     <div>
       <Chart
@@ -17,6 +17,7 @@ const App = () => {
         margin1={margin1}
         margin2={margin2}
         height2={height2}
+        brand={brand}
       />
     </div>
   );

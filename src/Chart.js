@@ -98,7 +98,16 @@ const styles = {
   }
 };
 
-const Chart = ({ classes, width, height, height2, margin1, margin2 }) => {
+const Chart = ({
+  classes,
+  width,
+  height,
+  height2,
+  margin1,
+  margin2,
+  brand
+}) => {
+  const title = `${brand} Page visits vs. Time`;
   const [tooltipProp, setTooltipProp] = useState({});
   const [tooltipDisplay, setTooltipDisplay] = useState("false");
   useEffect(() => {
@@ -113,12 +122,11 @@ const Chart = ({ classes, width, height, height2, margin1, margin2 }) => {
 
   //render function definition
   const render1 = data => {
-    const title = "Visits vs. Time";
     const innerWidth = width - margin1.left - margin1.right;
     const innerHeight = height - margin1.top - margin1.bottom;
     const innerHeight2 = height - margin2.top - margin2.bottom;
     const svg = select("svg")
-      .attr("width", width + margin1.left + margin1.right)
+      .attr("width", width)
       .attr("height", height)
       .attr("class", classes.svg)
       .attr("transform", "translate(70,120)");
@@ -128,8 +136,6 @@ const Chart = ({ classes, width, height, height2, margin1, margin2 }) => {
       .append("clipPath")
       .attr("id", "clip")
       .append("rect")
-      .attr("width", width)
-      .attr("height", height)
       .attr("transform", "translate(70,0)");
 
     //creating context for brush
@@ -282,7 +288,11 @@ const Chart = ({ classes, width, height, height2, margin1, margin2 }) => {
       <svg width="100%" height="100%">
         {" "}
       </svg>
-      <Tooltip data={tooltipProp} tooltipDisplay={tooltipDisplay} />
+      <Tooltip
+        data={tooltipProp}
+        tooltipDisplay={tooltipDisplay}
+        title={title}
+      />
     </div>
   );
 };
