@@ -98,16 +98,9 @@ const styles = {
   }
 };
 
-const Chart = ({
-  classes,
-  width,
-  height,
-  height2,
-  margin1,
-  margin2,
-  brand
-}) => {
-  const title = `${brand} Page visits vs. Time`;
+const Chart = ({ classes, width, height, height2, margin1, margin2 }) => {
+  const title = `Page visits vs. Time`;
+  const brand = "The New Yorker";
   const [tooltipProp, setTooltipProp] = useState({});
   const [tooltipDisplay, setTooltipDisplay] = useState("false");
   useEffect(() => {
@@ -157,7 +150,7 @@ const Chart = ({
     // //creating xScale
     const xScale = scaleTime()
       .domain(extent(data, xValue))
-      .range([0, innerWidth]);
+      .range([0, width]);
     //creating yScale
     const yScale = scaleLinear()
       .domain([0, max(data.map(yValue))])
@@ -165,7 +158,7 @@ const Chart = ({
     //creating x scale for brush
     const xScale2 = scaleTime()
       .domain(extent(data, xValue))
-      .range([0, innerWidth]);
+      .range([0, width]);
     //creating y scale for brush
     const yScale2 = scaleLinear()
       .domain([0, max(data.map(yValue))])
@@ -292,6 +285,7 @@ const Chart = ({
         data={tooltipProp}
         tooltipDisplay={tooltipDisplay}
         title={title}
+        brand={brand}
       />
     </div>
   );

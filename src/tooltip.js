@@ -6,7 +6,8 @@ const style = {
   title: {
     position: "absolute",
     top: "20px",
-    left: "200px"
+    left: "150px",
+    fontSize: "38px"
   },
   showTooltip: {
     position: "absolute",
@@ -24,11 +25,13 @@ const style = {
     display: "none"
   }
 };
-function Tooltip({ data, classes, tooltipDisplay, title }) {
+function Tooltip({ data, classes, tooltipDisplay, title, brand }) {
   var date = dateFormat(data.Date, "mmm d,yyyy");
   return (
     <div>
-      <h1 className={classes.title}>{title}</h1>
+      <div className={classes.title}>
+        <b>{brand}</b> {title}
+      </div>
       <div
         className={
           tooltipDisplay === "true" ? classes.showTooltip : classes.hideTooltip
