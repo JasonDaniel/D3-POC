@@ -1,25 +1,21 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import Tooltip from "./tooltip";
 import {
   select,
   scaleLinear,
-  scaleBand,
   scaleTime,
   axisBottom,
   axisLeft,
   max,
   area,
   csv,
-  timeParse,
   extent,
-  line,
-  curveBasis,
-  timeFormat,
-  zoom,
-  brushX,
-  event,
-  zoomIdentity
+  brushX
 } from "d3";
-import csvData from "./mock_data.csv";
+
+import * as d3 from "d3";
+import csvData from "./TNY.csv";
+import "./App.css";
 import withStyles from "react-jss";
 
 const styles = {
@@ -43,9 +39,11 @@ const styles = {
     opacity: ".3"
   },
   linepath1: {
-    fill: "maroon",
+    fill: "#23dced",
+    stroke: "black",
+    strokeWidth: "2",
     strokeLinejoin: "round",
-    opacity: ".2",
+    opacity: ".7",
     "&:hover": {
       opacity: "1"
     }
@@ -82,10 +80,14 @@ const styles = {
       opacity: "1"
     }
   },
+  tooltip: {
+    stroke: "black",
+    fill: "#1d858f"
+  },
   circle: {
-    fill: "black",
+    fill: "maroon",
     strokeLinejoin: "round",
-    opacity: "1",
+    opacity: ".5",
     "&:hover": {
       opacity: "1"
     }
@@ -96,325 +98,192 @@ const styles = {
   }
 };
 
-const Chart = ({ classes, data, width, height, height2, margin1, margin2 }) => {
-  //referencing svg to ref variable
-  const barRef = useRef();
-
-  //wrap funtion to wrap xAxis label textOverflow
-  var wrap = function() {
-    var self = select(this),
-      textLength = self.node().getComputedTextLength(),
-      text = self.text();
-    while (textLength > 50 && text.length > 0) {
-      text = text.slice(0, -1);
-      self.text(text + "...");
-      textLength = self.node().getComputedTextLength();
-    }
-  };
-
-  //Declaring the entrie code in use effect so that it will be triggered while the page is being loaded
+const Chart = ({ classes, width, height, height2, margin1, margin2 }) => {
+  const [tooltipProp, setTooltipProp] = useState({});
+  const [tooltipDisplay, setTooltipDisplay] = useState("false");
   useEffect(() => {
-    //parsing the data into numbers and date
-    var myData = csv(csvData).then(csvData => {
+    csv(csvData).then(csvData => {
       csvData.forEach(d => {
-        d.Allure = +d.Allure;
-        d.Vogue = +d.Vogue;
-        d.AD = +d.AD;
-        d.CNTraveller = +d.CNTraveller;
-        d.TeenVogue = +d.TeenVogue;
+        d.page_views = +d.page_views;
         d.Date = new Date(d.Date);
       });
-      // return JSON.stringify(csvData);
-      console.log(csvData);
-      render(csvData);
+      render1(csvData);
     });
+  }, []);
 
-    //referencing the svg where the chart is to be displayed
-    const svg = select(barRef.current)
+  //render function definition
+  const render1 = data => {
+    const title = "Visits vs. Time";
+    const innerWidth = width - margin1.left - margin1.right;
+    const innerHeight = height - margin1.top - margin1.bottom;
+    const innerHeight2 = height - margin2.top - margin2.bottom;
+    const svg = select("svg")
+      .attr("width", width + margin1.left + margin1.right)
+      .attr("height", height)
+      .attr("class", classes.svg)
+      .attr("transform", "translate(70,120)");
+
+    svg
+      .append("defs")
+      .append("clipPath")
+      .attr("id", "clip")
+      .append("rect")
       .attr("width", width)
       .attr("height", height)
-      .attr("class", classes.svg);
-    const title = "Visits vs. Time";
+      .attr("transform", "translate(70,0)");
 
-    const render = data => {
-      //creacting a group variable
-      var g = svg
-        .append("g")
-        .attr("transform", "translate(" + 50 + "," + 10 + ")");
+    //creating context for brush
+    var context = svg
+      .append("g")
+      .attr("class", "context")
+      .attr("transform", "translate(70," + 500 + ")");
 
-      //creating variables for x & y scales
-      const xValue = d => d.Date;
-      const yValue1 = d => d.Allure;
-      const yValue2 = d => d.AD;
-      const yValue3 = d => d.TeenVogue;
-      const yValue4 = d => d.CNTraveller;
-      const yValue5 = d => d.Vogue;
+    //creacting a group variable
+    var g = svg
+      .append("g")
+      .attr("class", "focus")
+      .attr("transform", "translate(70,10)");
 
-      const innerWidth = width - margin1.left - margin1.right;
-      const innerHeight = height - margin1.top - margin1.bottom;
-      const innerHeight2 = height - margin2.top - margin2.bottom;
+    //formating csv data
+    const xValue = d => d.Date;
+    const yValue = d => d.page_views;
 
-      // //creating xScale
-      const xScale = scaleTime()
-        .domain(extent(data, xValue))
-        .range([0, innerWidth]);
-      //creating yScale
-      const yScale = scaleLinear()
-        .domain([0, max(data.map(d => d.Allure))])
-        .range([innerHeight, 0]);
-      //creating x scale for brush
-      const xScale2 = scaleTime()
-        .domain(extent(data, xValue))
-        .range([0, innerWidth]);
-      //creating y scale for brush
-      const yScale2 = scaleLinear()
-        .domain([0, max(data.map(d => d.Allure))])
-        .range([innerHeight2, 0]);
+    // //creating xScale
+    const xScale = scaleTime()
+      .domain(extent(data, xValue))
+      .range([0, innerWidth]);
+    //creating yScale
+    const yScale = scaleLinear()
+      .domain([0, max(data.map(yValue))])
+      .range([innerHeight, 0]);
+    //creating x scale for brush
+    const xScale2 = scaleTime()
+      .domain(extent(data, xValue))
+      .range([0, innerWidth]);
+    //creating y scale for brush
+    const yScale2 = scaleLinear()
+      .domain([0, max(data.map(yValue))])
+      .range([innerHeight2, 0]);
 
-      //axis for brush
-      const xAxis2 = axisBottom(xScale2);
-      const xAxis = axisBottom(xScale);
+    //x axis for brush
+    const xAxis2 = axisBottom(xScale2);
+    const xAxis = axisBottom(xScale);
+    const yAxis = axisLeft(yScale)
+      .ticks(4)
+      .tickSizeInner(-innerWidth);
 
-      var focus = svg
-        .append("g")
-        .attr("class", "focus")
+    //defining Area generator for main chart
+    const areaGenerator1 = area()
+      .x(d => xScale(d.Date))
+      .y0(innerHeight)
+      .y1(d => yScale(d.page_views));
+
+    //defining area chart for brush
+    const areaGeneratorBrush1 = area()
+      .x(d => xScale2(xValue(d)))
+      .y0(180)
+      .y1(d => yScale2(yValue(d)));
+
+    //appending XAxis
+    g.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + innerHeight + ")")
+      .call(xAxis)
+      .selectAll("text");
+
+    // //appending yAxis
+    g.append("g")
+      .call(yAxis)
+      .attr("transform", "translate(0,0)")
+      .attr("class", classes.yAxis)
+      .attr("dy", "-300px");
+
+    //appending area for main chart
+    g.append("path")
+      .attr("class", classes.linepath1)
+      .attr("d", areaGenerator1(data));
+
+    //creating tool tip circle and text
+    g.append("circle")
+      .attr("class", classes.tooltip)
+      .attr("r", 4);
+
+    g.append("text")
+      .attr("class", classes.tooltip)
+      .attr("dy", "-1em");
+
+    //getting tooltip position
+    var bisectDate = d3.bisector(d => d.Date).left;
+    var formatOutput = function(d) {
+      return d.Date + " - " + d.page_views + "views";
+    };
+
+    //adding mouse enter n leave action
+    g.on("mousemove", function() {
+      var xTooltipPos = d3.mouse(this)[0];
+      var xTooltipPoint = xScale.invert(xTooltipPos);
+      var i = bisectDate(data, xTooltipPoint, 1);
+      var d0 = data[i - 1];
+      var d1 = data[i];
+      var d = xTooltipPoint - d0.Date > d1.Date - xTooltipPoint ? d1 : d0;
+      g.select("circle")
+        .attr("data", data)
         .attr(
           "transform",
-          "translate(" + margin1.left + "," + margin1.top + ")"
+          "translate(" + xScale(d.Date) + "," + yScale(d.page_views) + ")"
         );
+      setTooltipProp(data[i]);
+    })
+      .on("mouseout", function() {
+        g.select("circle").style("opacity", 0);
+        setTooltipDisplay("false");
+      })
+      .on("mouseover", function() {
+        g.select("circle").style("opacity", 1);
+        setTooltipDisplay("true");
+      });
 
-      //appending xAxis
-      g.append("g")
-        .attr("transform", "translate(0," + innerHeight + ")")
-        .call(
-          axisBottom(xScale)
-            .ticks(30)
-            .tickFormat(timeFormat("%d/%m"))
-        )
-        .attr("class", "")
-        .call(g => g.select(".domain").remove())
-        .selectAll("text")
-        .attr("transform", "rotate(-45)")
-        .attr("dx", "-30px")
-        .attr("class", classes.xAxis);
+    //appending axis for brush
+    context
+      .append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0,180)")
+      .call(xAxis2);
 
-      // //appending yAxis
-      g.append("g")
-        .call(
-          axisLeft(yScale)
-            .ticks(6)
-            .tickSizeInner(-innerWidth)
-        )
-        .call(g => g.select(".domain").remove())
-        .attr("class", classes.yAxis);
+    //appending area for brush
+    context
+      .append("path")
+      .attr("class", classes.linepath1)
+      .attr("d", areaGeneratorBrush1(data));
 
-      //defining Area generator
-      const areaGenerator1 = area()
-        .x(d => xScale(xValue(d)))
-        .y0(innerHeight)
-        .y1(d => yScale(yValue1(d)));
-      //.curve(curveBasis);
-
-      // //defining brush
-      // var brush = brushX()
-      //   .extent([
-      //     [0, 0],
-      //     [width, height2]
-      //   ])
-      //   .on("brush end", brushed(xScale, xScale2, areaGenerator1, focus));
-
-      // const brushed = (xScale, xScale2, areaGenerator1, focus) => {
-      //   xScale.domain(brush.empty() ? xScale2.domain() : brush.extent());
-      //   focus.select(".area").attr("d", areaGenerator1);
-      //   focus.select(".x.axis").call(xAxis);
-      // };
-
-      // //brushed function definition
-      // const brushed = (xScale, xScale2, focus, areaGenerator1) => {
-      //   if (event.sourceEvent && event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
-      //   var s = event.selection || xScale2.range();
-      //   xScale.domain(s.map(xScale2.invert, xScale2));
-      //   focus.select(".area").attr("d", areaGenerator1);
-      //   focus.select(".axis--x").call(xAxis);
-      //   svg
-      //     .select(".zoom")
-      //     .call(
-      //       zoom.transform,
-      //       zoomIdentity.scale(width / (s[1] - s[0])).translate(-s[0], 0)
-      //     );
-      // };
-
-      // //zoomed function definition
-      // const zoomed = () => {
-      //   if (event.sourceEvent && event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
-      //   var t = event.transform;
-      //   xScale.domain(t.rescaleX(xScale2).domain());
-      //   focus.select(".area").attr("d", area);
-      //   focus.select(".axis--x").call(xAxis);
-      //   context
-      //     .select(".brush")
-      //     .call(brush.move, xScale.range().map(t.invertX, t));
-      // };
-
-      const areaGenerator2 = area()
-        .x(d => xScale(xValue(d)))
-        .y0(innerHeight)
-        .y1(d => yScale(yValue2(d)));
-
-      const areaGenerator3 = area()
-        .x(d => xScale(xValue(d)))
-        .y0(innerHeight)
-        .y1(d => yScale(yValue3(d)));
-
-      const areaGenerator4 = area()
-        .x(d => xScale(xValue(d)))
-        .y0(innerHeight)
-        .y1(d => yScale(yValue4(d)));
-
-      //appending circle for points
-      // g.selectAll("circle")
-      //   .data(data)
-      //   .enter()
-      //   .append("circle")
-      //   .attr("cy", d => yScale(yValue1(d)))
-      //   .attr("cx", d => xScale(xValue(d)))
-      //   .attr("class", classes.circle)
-      //   .attr("r", 5);
-      // .on("mouseover", function(d) {
-      //   svg
-      //     .transition()
-      //     .duration(200)
-      //     .style("opacity", 0.9);
-      //   svg
-      //     .html(`${d => xScale(xValue(d))} <br/> ${d => yScale(yValue1(d))}`)
-      //     .style("left", event.pageX + "px")
-      //     .style("top", event.pageY - 28 + "px");
-      // })
-      // .on("mouseout", function(d) {
-      //   svg
-      //     .transition()
-      //     .duration(500)
-      //     .style("opacity", 0);
-      // });
-
-      // g.selectAll("circle")
-      //   .data(data)
-      //   .enter()
-      //   .append("circle")
-      //   .attr("cy", d => yScale(yValue2(d)))
-      //   .attr("cx", d => xScale(xValue(d)))
-      //   .attr("class", classes.circle)
-      //   .attr("r", 5);
-
-      // g.selectAll("circle")
-      //   .data(data)
-      //   .enter()
-      //   .append("circle")
-      //   .attr("cy", d => yScale(yValue3(d)))
-      //   .attr("cx", d => xScale(xValue(d)))
-      //   .attr("class", classes.circle)
-      //   .attr("r", 5);
-
-      // g.selectAll("circle")
-      //   .data(data)
-      //   .enter()
-      //   .append("circle")
-      //   .attr("cy", d => yScale(yValue4(d)))
-      //   .attr("cx", d => xScale(xValue(d)))
-      //   .attr("class", classes.circle)
-      //   .attr("r", 5);
-
-      // const areaGenerator5 = area()
-      //   .x(d => xScale(xValue(d)))
-      //   .y0(innerHeight)
-      //   .y1(d => yScale((d)));
-      // //.curve(curveBasis);
-
-      g.append("path")
-        .attr("class", classes.linepath1)
-        .attr("d", areaGenerator1(data));
-
-      g.append("path")
-        .attr("class", classes.linepath2)
-        .attr("d", areaGenerator2(data));
-
-      g.append("path")
-        .attr("class", classes.linepath3)
-        .attr("d", areaGenerator3(data));
-
-      g.append("path")
-        .attr("class", classes.linepath4)
-        .attr("d", areaGenerator4(data));
-
-      // g.append("path")
-      //   .attr("class", classes.linepath5)
-      //   .attr("d", areaGenerator5(data));
-
-      g.append("text")
-        .attr("class", classes.title)
-        .attr("y", -10)
-        .text(title);
-      //brush area generators
-      const areaGeneratorBrush1 = area()
-        .x(d => xScale2(xValue(d)))
-        .y0(180)
-        .y1(d => yScale2(yValue1(d)));
-
-      const areaGeneratorBrush2 = area()
-        .x(d => xScale2(xValue(d)))
-        .y0(180)
-        .y1(d => yScale2(yValue2(d)));
-
-      const areaGeneratorBrush3 = area()
-        .x(d => xScale2(xValue(d)))
-        .y0(180)
-        .y1(d => yScale2(yValue3(d)));
-
-      const areaGeneratorBrush4 = area()
-        .x(d => xScale2(xValue(d)))
-        .y0(180)
-        .y1(d => yScale2(yValue4(d)));
-
-      var context = svg
-        .append("g")
-        .attr("class", "context")
-        .attr("transform", "translate(50," + 600 + ")");
-      context
-        .append("path")
-        .attr("class", classes.linepath1)
-        .attr("d", areaGeneratorBrush1(data));
-      context
-        .append("path")
-        .attr("class", classes.linepath2)
-        .attr("d", areaGeneratorBrush2(data));
-      context
-        .append("path")
-        .attr("class", classes.linepath3)
-        .attr("d", areaGeneratorBrush3(data));
-      context
-        .append("path")
-        .attr("class", classes.linepath4)
-        .attr("d", areaGeneratorBrush4(data));
-
-      context
-        .append("g")
-        .attr("class", "axis axis--x")
-        .attr("transform", "translate(0,180)")
-        .call(xAxis2);
-
-      // context
-      //   .append("g")
-      //   .attr("class", "brush")
-      //   .call(brush)
-      //   .call(brush.move, xScale.range());
+    //brush function definition
+    const brushed = () => {
+      var s = d3.event.selection || xScale2.range();
+      xScale.domain(s.map(xScale2.invert, xScale2));
+      g.select(`.${classes.linepath1}`).attr("d", areaGenerator1(data));
+      g.select(".x.axis").call(xAxis);
     };
-  }, [csvData]);
 
-  //returning svg component
+    //creating brush variable
+    const brush = brushX().on("brush", brushed);
+
+    //adding brush function to brush context
+    context
+      .append("g")
+      .attr("class", "x brush")
+      .call(brush)
+      .selectAll("rect")
+      .attr("y", 5)
+      .attr("height", height2 + 10);
+  };
+
   return (
-    <svg width="100%" height="100%" ref={barRef}>
-      {" "}
-    </svg>
+    <div>
+      <svg width="100%" height="100%">
+        {" "}
+      </svg>
+      <Tooltip data={tooltipProp} tooltipDisplay={tooltipDisplay} />
+    </div>
   );
 };
 
