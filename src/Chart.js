@@ -150,7 +150,7 @@ const Chart = ({ classes, width, height, height2, margin1, margin2 }) => {
     // //creating xScale
     const xScale = scaleTime()
       .domain(extent(data, xValue))
-      .range([0, width]);
+      .range([0, innerWidth]);
     //creating yScale
     const yScale = scaleLinear()
       .domain([0, max(data.map(yValue))])
@@ -158,7 +158,7 @@ const Chart = ({ classes, width, height, height2, margin1, margin2 }) => {
     //creating x scale for brush
     const xScale2 = scaleTime()
       .domain(extent(data, xValue))
-      .range([0, width]);
+      .range([0, innerWidth]);
     //creating y scale for brush
     const yScale2 = scaleLinear()
       .domain([0, max(data.map(yValue))])
