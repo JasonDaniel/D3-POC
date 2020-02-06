@@ -8,18 +8,15 @@ const App = () => {
   const data = [
     {
       type: "Unauthenticated",
-      newValue: 4800,
-      oldValue: 1865
+      value: 4800
     },
     {
       type: "Authenticated",
-      newValue: 420,
-      oldValue: 8365
+      value: 420
     },
     {
       type: "Self Authenticated ",
-      newValue: 3705,
-      oldValue: 865
+      value: 3705
     }
   ];
   const title = "Authentication";

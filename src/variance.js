@@ -24,26 +24,23 @@ const styles = {
     padding: "3px"
   }
 };
-const Variance = ({ classes, data }) => {
+const Variance = ({ classes, newValue, oldValue }) => {
+  const percentConvertor = newValue - oldValue > 0 ? 100 : -100;
   return (
     <div
       className={classes.varianceBlock}
       style={
-        data.data.newValue - data.data.oldValue > 0
+        newValue - oldValue > 0
           ? { background: "#12BF38" }
           : { background: "#EF4A4A" }
       }
     >
       <img
         className={classes.image}
-        src={data.data.newValue - data.data.oldValue > 0 ? upArrow : downArrow}
+        src={newValue - oldValue > 0 ? upArrow : downArrow}
       ></img>
       <div className={classes.variancePercent}>
-        {(
-          ((data.data.newValue - data.data.oldValue) / data.data.oldValue) *
-          100
-        ).toFixed(0)}
-        %
+        {(((newValue - oldValue) / oldValue) * percentConvertor).toFixed(0)}%
       </div>
     </div>
   );

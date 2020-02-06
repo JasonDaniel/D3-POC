@@ -1,9 +1,6 @@
 import React from "react";
-import * as d3 from "d3";
 import withStyles from "react-jss";
 import Variance from "./variance";
-import downArrow from "./down-arrow.png";
-import upArrow from "./up-arrow.png";
 const styles = {
   legendContainer: {
     display: "flex",
@@ -14,7 +11,6 @@ const styles = {
   legendBlock: {
     height: "61px",
     width: "10px"
-    //background: "black"
   },
   legendTextContainer: {
     marginLeft: "10px"
@@ -30,18 +26,17 @@ const styles = {
   }
 };
 const LegendItem = ({ classes, color, data }) => {
-  console.log(data.variance);
   return (
     <div className={classes.legendContainer}>
       <div className={classes.legendBlock} style={{ background: color }} />
       <div className={classes.legendTextContainer}>
-        <div className={classes.type}>{data.data.type}</div>
+        <div className={classes.type}>{data.type}</div>
         <div className={classes.value}>
-          {data.data.newValue > 1000
-            ? (data.data.newValue / 1000).toFixed(1) + "k"
-            : data.data.newValue}
+          {data.value > 1000
+            ? (data.value / 1000).toFixed(1) + "k"
+            : data.value}
         </div>
-        <Variance data={data} />
+        <Variance newValue={data.value} oldValue={data.oldValue} />
       </div>
     </div>
   );

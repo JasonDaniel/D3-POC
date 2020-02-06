@@ -38,6 +38,23 @@ const style = {
     fontSize: "26px"
   }
 };
+const legendData = [
+  {
+    type: "Unauthenticated",
+    value: 4800,
+    oldValue: 2600
+  },
+  {
+    type: "Authenticated",
+    value: 420,
+    oldValue: 1600
+  },
+  {
+    type: "Self Authenticated ",
+    value: 3705,
+    oldValue: 600
+  }
+];
 
 const DonutChart = ({
   classes,
@@ -58,7 +75,7 @@ const DonutChart = ({
           <svg className={classes.svgVar}>
             <g transform={translate}>
               {pie.map((d, i) => {
-                total = total + d.newValue;
+                total = total + d.value;
                 return (
                   <Arc
                     key={`arc-${i}`}
@@ -77,7 +94,7 @@ const DonutChart = ({
           </div>
         </div>
         <div className={classes.legendContainer}>
-          {pie.map((d, i) => {
+          {legendData.map((d, i) => {
             return (
               <LegendItem key={`legend-${i}`} data={d} color={colors[i]} />
             );
