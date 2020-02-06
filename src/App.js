@@ -1,63 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Chart from './Chart'
-
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import Chart from "./Chart";
+import DonutChart from "./donut-chart";
+import withStyles from "react-jss";
 const App = () => {
-
-  const width = 1000;
-  const height = 800;
-  const margin = 80;
   const data = [
     {
-      dimBranName: "Vogue",
-      value: 400
+      type: "Unauthenticated",
+      newValue: 4800,
+      oldValue: 1865
     },
     {
-      dimBranName: "Allure",
-      value: 2420
+      type: "Authenticated",
+      newValue: 420,
+      oldValue: 8365
     },
     {
-      dimBranName: "Teen Vogue",
-      value: 1270
-    },
-    {
-      dimBranName: "CN Traveller",
-      value: 553
-    },
-    {
-      dimBranName: "Wired",
-      value: 731
-    },
-    {
-      dimBranName: "Bon Appetite",
-      value: 136
-    },
-    {
-      dimBranName: "Ars tech",
-      value: 682
-    },
-    {
-      dimBranName: "AD",
-      value: 239
-    },
-    {
-      dimBranName: "The New Yorker",
-      value: 367
-    },
-    {
-      dimBranName: "Vanity Fair",
-      value: 442
+      type: "Self Authenticated ",
+      newValue: 3705,
+      oldValue: 865
     }
   ];
-
-        return (
-            <div>
-              <Chart data = {data} width={width} height={height} margin={margin}/>
-            </div>
-          );
-      
-  }
-
+  const title = "Authentication";
+  var colors = ["#55B1F3", "#3A66BB", "#C4C4C4"];
+  return (
+    <div>
+      <DonutChart
+        data={data}
+        outerRadius={130}
+        innerRadius={77}
+        title={title}
+        colors={colors}
+      />
+    </div>
+  );
+};
 
 export default App;
