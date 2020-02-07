@@ -25,8 +25,8 @@ const App = () => {
     <div>
       <DonutChart
         data={data}
-        outerRadius={130}
-        innerRadius={77}
+        outerRadius={90}
+        innerRadius={60}
         title={title}
         colors={colors}
       />

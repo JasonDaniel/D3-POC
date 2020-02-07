@@ -26,24 +26,26 @@ const styles = {
 };
 const Variance = ({ classes, newValue, oldValue }) => {
   const percentConvertor = newValue - oldValue > 0 ? 100 : -100;
-  return (
-    <div
-      className={classes.varianceBlock}
-      style={
-        newValue - oldValue > 0
-          ? { background: "#12BF38" }
-          : { background: "#EF4A4A" }
-      }
-    >
-      <img
-        className={classes.image}
-        src={newValue - oldValue > 0 ? upArrow : downArrow}
-      ></img>
-      <div className={classes.variancePercent}>
-        {(((newValue - oldValue) / oldValue) * percentConvertor).toFixed(0)}%
+  if (oldValue) {
+    return (
+      <div
+        className={classes.varianceBlock}
+        style={
+          newValue - oldValue > 0
+            ? { background: "#12BF38" }
+            : { background: "#EF4A4A" }
+        }
+      >
+        <img
+          className={classes.image}
+          src={newValue - oldValue > 0 ? upArrow : downArrow}
+        ></img>
+        <div className={classes.variancePercent}>
+          {(((newValue - oldValue) / oldValue) * percentConvertor).toFixed(0)}%
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else return null;
 };
 
 export default withStyles(styles)(Variance);

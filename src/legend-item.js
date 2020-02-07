@@ -6,10 +6,9 @@ const styles = {
     display: "flex",
     flexDoirection: "row",
     padding: "10px",
-    margin: "10px 10px 10px 40px"
+    margin: "10px 10px 10px 20px"
   },
   legendBlock: {
-    height: "61px",
     width: "10px"
   },
   legendTextContainer: {

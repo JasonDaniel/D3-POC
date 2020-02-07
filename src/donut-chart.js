@@ -6,32 +6,34 @@ import LegendItem from "./legend-item";
 
 const style = {
   wholeContainer: {
-    margin: "20px"
+    margin: "2% 0 0 2%"
   },
   contentContainer: {
     display: "flex",
     flexDirection: "row",
-    position: "relative",
-    margin: "10px 10px 10px 10px"
+    position: "relative"
   },
   groupVar: {
     position: "relative",
-    margin: "10px 10px 10px 10px"
+    display: "flex",
+    flexDirection: "row",
+    margin: "1%"
   },
   label: {
     position: "absolute",
-    top: "115px",
-    left: "100px",
+    top: "75%",
+    left: "22%",
     fontWeight: 750,
     fontSize: "26px"
   },
   svgVar: {
-    width: "300px",
-    height: "350px"
+    width: "100%",
+    height: "160%",
+    marginLeft: "-10%"
   },
   legendContainer: {
     position: "absolute",
-    left: "270px"
+    left: "60%"
   },
   title: {
     fontWeight: 750,
@@ -51,8 +53,7 @@ const legendData = [
   },
   {
     type: "Self Authenticated ",
-    value: 3705,
-    oldValue: 600
+    value: 3705
   }
 ];
 
@@ -69,7 +70,6 @@ const DonutChart = ({
   var total = 0;
   return (
     <div className={classes.wholeContainer}>
-      <div className={classes.title}>{title}</div>
       <div className={classes.contentContainer}>
         <div className={classes.groupVar}>
           <svg className={classes.svgVar}>
@@ -92,13 +92,13 @@ const DonutChart = ({
           <div className={classes.label}>
             {total > 1000 ? (total / 1000).toFixed(2) + "k" : total}
           </div>
-        </div>
-        <div className={classes.legendContainer}>
-          {legendData.map((d, i) => {
-            return (
-              <LegendItem key={`legend-${i}`} data={d} color={colors[i]} />
-            );
-          })}
+          <div className={classes.legendContainer}>
+            {legendData.map((d, i) => {
+              return (
+                <LegendItem key={`legend-${i}`} data={d} color={colors[i]} />
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
